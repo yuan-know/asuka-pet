@@ -35,3 +35,15 @@
 决定：关键逻辑、计划、决策、进度必须写入文档。
 
 原因：用户可能因 5 小时限额切换大模型，文档是跨模型交接机制。
+
+## 2026-06-04：tsconfig moduleResolution 改为 bundler
+
+决定：将 `tsconfig.json` 中的 `moduleResolution` 从计划的 `"Node"` 改为 `"bundler"`。
+
+原因：electron-vite 和 Vite 生态系统期望使用 bundler 风格的模块解析，这样可以正确解析 `@vitejs/plugin-react` 等依赖的类型定义。
+
+## 2026-06-04：npm install 使用 --legacy-peer-deps
+
+决定：Task 0 依赖安装时使用了 `npm install --legacy-peer-deps`。
+
+原因：最新版本的 `electron-vite`、`vite`、`vitest` 等包之间存在 peer dependency 冲突，使用 `--legacy-peer-deps` 可以在保持包版本为最新的同时完成安装。
