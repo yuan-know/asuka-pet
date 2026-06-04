@@ -6,7 +6,7 @@
 
 ## 当前状态总览
 
-项目处于 **Core MVP 实现即将完成** 状态。Task 8 已完成，只剩 Task 9 验证和打包。
+项目处于 **Core MVP 代码实现阶段完成** 状态。Task 0-9 全部完成。
 
 已完成：
 
@@ -14,7 +14,7 @@
 - 实施计划已完成：`docs/superpowers/plans/2026-06-04-desktop-pet-mvp.md`。
 - 已创建隔离 worktree：`.worktrees/desktop-pet-mvp`。
 - Task 0-8 已全部完成并通过测试和 typecheck。
-- 下一步是 Task 9：端到端验证、build、和打包配置基线测试。
+- Task 9：自动化检查（typecheck + 测试 + build）全部通过。人工验证（9B `[VISUAL]`）和打包（`npm run package`）留待用户在有视觉能力的模型下进行。
 
 当前 `git status --short`：
 
@@ -269,9 +269,22 @@ Tests       21 passed (21)
 typecheck   passed
 ```
 
+### 2026-06-04 Task 9 Verification (9A CORE)
+
+自动化检查全部通过。Build 过程中修复了两个问题（index.html 位置、node:path 浏览器兼容），已在 decisions.md 记录。
+
+```text
+typecheck   passed
+Tests       5 files, 21 passed
+build       passed (main + preload + renderer, clean output to out/)
+```
+
+人工验证（9B `[VISUAL]`）和打包命令（`npm run package`）待后续进行。
+
 ## 当前未完成事项
 
-- Task 9 端到端验证和打包尚未执行。
 - 尚未更新计划文档里的 `[CORE]/[VISUAL]/[MULTIMODAL]` 标签。
+- 人工视觉验证（9B `[VISUAL]`）：桌面窗口、透明、托盘、状态切换、拖拽操作 — 需要用户手动或用有视觉能力的模型确认。
+- `npm run package`（electron-builder 打包）尚未测试，可能需要额外 Windows 工具链。
 - 视觉美化（5B `[VISUAL]`）、文件内容理解（6B `[MULTIMODAL]`）留待后续。
-- 尚未执行 `npm run build` 和 `npm run package`。
+- 尚未实际连接到 Claude Code SessionStart hook（需用户明确授权）。

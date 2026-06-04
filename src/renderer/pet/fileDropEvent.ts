@@ -1,4 +1,3 @@
-import path from 'node:path';
 import { createFileDroppedEvent, type FileAction, type FileDroppedEvent, type FileMeta } from '../../shared/eventTypes';
 
 interface DroppedFileLike {
@@ -7,11 +6,16 @@ interface DroppedFileLike {
   size: number;
 }
 
+function getExtension(filename: string): string {
+  const dotIndex = filename.lastIndexOf('.');
+  return dotIndex > 0 ? filename.slice(dotIndex) : '';
+}
+
 export function createFileMeta(file: DroppedFileLike): FileMeta {
   return {
     path: file.path,
     name: file.name,
-    extension: path.extname(file.name),
+    extension: getExtension(file.name),
     size: file.size
   };
 }

@@ -47,3 +47,15 @@
 决定：Task 0 依赖安装时使用了 `npm install --legacy-peer-deps`。
 
 原因：最新版本的 `electron-vite`、`vite`、`vitest` 等包之间存在 peer dependency 冲突，使用 `--legacy-peer-deps` 可以在保持包版本为最新的同时完成安装。
+
+## 2026-06-04: index.html 移至 src/renderer/
+
+决定：将 `index.html` 从项目根目录移至 `src/renderer/index.html`，并更新 `electron.vite.config.ts` 中的 renderer input 路径。
+
+原因：electron-vite 的 renderer build 无法正确处理项目根目录的 HTML 文件作为 entry（输出路径计算产生 `../../index.html` 非法相对路径）。移至 `src/renderer/` 后 build 正常。
+
+## 2026-06-04: 移除 renderer 中的 node:path 依赖
+
+决定：将 `src/renderer/pet/fileDropEvent.ts` 中的 `path.extname` 替换为纯字符串实现 `getExtension()`。
+
+原因：Vite 将 `node:path` 外部化为浏览器兼容性模块，但 Electron renderer 在 contextIsolation 模式下无法使用 Node.js API。使用简单的 `lastIndexOf('.')` 实现避免该问题。
