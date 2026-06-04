@@ -6,7 +6,7 @@
 
 ## 当前状态总览
 
-项目处于 **Core MVP 实现进行中** 状态。Task 2 已完成，下一步是 Task 3。
+项目处于 **Core MVP 实现进行中** 状态。Task 3 已完成，下一步是 Task 4。
 
 已完成：
 
@@ -16,6 +16,7 @@
 - Task 0 已完成并通过两阶段 review：Electron/TypeScript 工具链基线。
 - Task 1 已完成并通过两阶段 review：共享事件协议。
 - Task 2 已完成并通过测试和 typecheck：JSONL 事件存储与路径工具。
+- Task 3 已完成并通过测试和 typecheck：桌宠状态配置、中文气泡和优先级状态机。
 
 当前 `git status --short`：
 
@@ -23,7 +24,7 @@
  M docs/handoff.md
 ```
 
-最近提交（Task 2 刚提交后）：
+最近提交（Task 3 刚提交后）：
 
 ```text
 <latest> (HEAD -> desktop-pet-mvp) feat: add jsonl event storage
@@ -206,6 +207,16 @@ Tests       4 passed (4)
 ```text
 Test Files  2 passed (2)
 Tests       8 passed (8)
+typecheck   passed
+```
+
+### 2026-06-04 Task 3 状态机测试
+
+状态配置、中文气泡和优先级状态机实现完成，全部测试通过。
+
+```text
+Test Files  3 passed (3)
+Tests       14 passed (14)
 typecheck   passed
 ```
 
