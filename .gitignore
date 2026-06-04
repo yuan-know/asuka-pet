@@ -1,0 +1,10 @@
+node_modules/
+dist/
+build/
+release/
+.env
+.DS_Store
+.superpowers/
+.worktrees/
+events/*.jsonl
+!events/.gitkeep
