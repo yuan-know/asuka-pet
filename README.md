@@ -23,3 +23,18 @@
 - 桌宠不能影响 Claude Code 正常运行。
 - 文件交互不能自动执行、删除或上传文件。
 - 所有关键进度必须写入文档，方便换模型继续。
+
+## 开发命令
+
+```bash
+npm install
+npm run dev
+npm run typecheck
+npm test
+npm run emit -- thinking
+```
+
+## 当前实现状态
+
+- Phase 0 正在进行：项目工具链与基础目录。
+- 代码实现必须同步更新 `docs/handoff.md`。

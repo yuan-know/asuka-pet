@@ -4,7 +4,9 @@
 
 ## 当前状态
 
-项目处于设计完成阶段，尚未开始代码实现。用户已确认总体方向、状态系统、文件拖拽、Claude Code Bridge、目录/文档机制、MVP 里程碑。
+- Phase 0 已开始。
+- npm 工具链计划使用 Electron、electron-vite、React、TypeScript、Vitest。
+- 下一步是实现共享事件协议和 JSONL 工具。
 
 ## 用户明确要求
 
@@ -44,3 +46,27 @@
 - 不要把关键决策只写在聊天里。
 - hook 或桌宠失败不能影响 Claude Code 正常运行。
 - 文件交互不能自动执行、删除、上传用户文件。
+
+## 验证记录
+
+### 2026-06-04 工具链基线验证
+
+```bash
+# typecheck 输出
+> claude-code-desktop-pet@0.1.0 typecheck
+> tsc --noEmit
+
+# test 输出
+> claude-code-desktop-pet@0.1.0 test
+> vitest run
+
+RUN  v4.1.8 C:/Users/yuan/projects/claude-code-desktop-pet/.worktrees/desktop-pet-mvp
+
+No test files found, exiting with code 1
+
+include: **/*.{test,spec}.?(c|m)[jt]s?(x)
+exclude:  **/node_modules/**, **/.git/**
+```
+
+注：typecheck 通过（无 src 文件），vitest 无测试文件为预期行为。
+

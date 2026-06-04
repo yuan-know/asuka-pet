@@ -1,5 +1,6 @@
 node_modules/
 dist/
+out/
 build/
 release/
 .env
@@ -8,3 +9,4 @@ release/
 .worktrees/
 events/*.jsonl
 !events/.gitkeep
+npm-debug.log*

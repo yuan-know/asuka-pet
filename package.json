@@ -1,0 +1,51 @@
+{
+  "name": "claude-code-desktop-pet",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Windows-focused Claude Code desktop pet MVP",
+  "type": "module",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "tsc --noEmit && electron-vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "emit": "tsx src/bridge/emitEvent.ts",
+    "bridge:hook": "tsx src/bridge/claudeHook.ts",
+    "bridge:watch-outbox": "tsx src/bridge/watchOutbox.ts",
+    "package": "npm run build && electron-builder --win portable"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "electron-vite": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "electron": "latest",
+    "electron-builder": "latest",
+    "jsdom": "latest",
+    "tsx": "latest",
+    "typescript": "latest",
+    "vite": "latest",
+    "vitest": "latest"
+  },
+  "build": {
+    "appId": "local.claude-code-desktop-pet",
+    "productName": "Claude Code Desktop Pet",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**",
+      "package.json"
+    ],
+    "win": {
+      "target": "portable"
+    }
+  }
+}
