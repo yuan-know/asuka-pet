@@ -6,7 +6,7 @@
 
 ## 当前状态总览
 
-项目处于 **Core MVP 实现进行中** 状态。Task 4 已完成，下一步是 Task 5。
+项目处于 **Core MVP 实现进行中** 状态。Task 5 已完成，下一步是 Task 6。
 
 已完成：
 
@@ -18,6 +18,7 @@
 - Task 2 已完成并通过测试和 typecheck：JSONL 事件存储与路径工具。
 - Task 3 已完成并通过测试和 typecheck：桌宠状态配置、中文气泡和优先级状态机。
 - Task 4 已完成并通过测试和 typecheck：Electron 主进程窗口、托盘、事件轮询和 IPC 桥。
+- Task 5 已完成并通过测试和 typecheck：React Renderer 桌宠界面（5A `[CORE]` 占位 CSS 小人和功能骨架；5B `[VISUAL]` 视觉美化以后再做）。
 
 当前 `git status --short`：
 
@@ -25,7 +26,7 @@
  M docs/handoff.md
 ```
 
-最近提交（Task 4 刚提交后）：
+最近提交（Task 5 刚提交后）：
 
 ```text
 <latest> (HEAD -> desktop-pet-mvp) feat: add jsonl event storage
@@ -224,6 +225,16 @@ typecheck   passed
 ### 2026-06-04 Task 4 Electron Shell
 
 主进程窗口、托盘、事件总线和 preload IPC 桥实现完成，typecheck 和全部已有测试通过（Electron 主进程代码无独立单元测试）。
+
+```text
+Test Files  3 passed (3)
+Tests       14 passed (14)
+typecheck   passed
+```
+
+### 2026-06-04 Task 5 Renderer UI (5A CORE)
+
+React Renderer 桌宠界面实现完成：占位 CSS 角色、中文气泡、状态标签、文件动作菜单、拖拽处理、CSS 动画。typecheck 和测试通过。视觉美化（5B）留待有视觉能力的模型处理。
 
 ```text
 Test Files  3 passed (3)

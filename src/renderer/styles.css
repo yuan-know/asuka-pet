@@ -1,0 +1,145 @@
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: transparent;
+  font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+  user-select: none;
+}
+
+.app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.speech-bubble {
+  max-width: 280px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  color: #4b1f2f;
+  background: rgba(255, 238, 244, 0.94);
+  border: 1px solid rgba(255, 130, 160, 0.7);
+  box-shadow: 0 8px 22px rgba(90, 20, 50, 0.22);
+  font-size: 14px;
+}
+
+.pet-stage {
+  position: relative;
+  width: 180px;
+  height: 230px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-app-region: drag;
+}
+
+.pet-head {
+  position: absolute;
+  left: 35px;
+  top: 8px;
+  width: 110px;
+  height: 95px;
+  border-radius: 48% 48% 44% 44%;
+  background: linear-gradient(135deg, #ff8a80, #ffccbc);
+  box-shadow: inset -8px -8px 0 rgba(180, 50, 70, 0.18);
+}
+
+.pet-eye {
+  position: absolute;
+  top: 44px;
+  width: 12px;
+  height: 18px;
+  border-radius: 50%;
+  background: #2c1a24;
+  animation: blink 5s infinite;
+}
+
+.pet-eye-left { left: 30px; }
+.pet-eye-right { right: 30px; }
+
+.pet-body {
+  position: absolute;
+  left: 48px;
+  top: 92px;
+  width: 84px;
+  height: 112px;
+  border-radius: 42px 42px 28px 28px;
+  background: linear-gradient(180deg, #fff3f6, #ffb3c1);
+  box-shadow: 0 12px 22px rgba(90, 20, 50, 0.18);
+}
+
+.pet-badge {
+  position: absolute;
+  left: 25px;
+  top: 38px;
+  color: #d84363;
+  font-weight: 700;
+}
+
+.pet-state-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  color: rgba(80, 20, 45, 0.72);
+  font-size: 12px;
+}
+
+.pet-idle-breathe { animation: breathe 3s ease-in-out infinite; }
+.pet-thinking-pulse { animation: pulse 1.2s ease-in-out infinite; }
+.pet-working-bounce,
+.pet-coding-tap,
+.pet-testing-watch { animation: bounce 0.8s ease-in-out infinite; }
+.pet-reading-sway { animation: sway 1.4s ease-in-out infinite; }
+.pet-victory-pop { animation: pop 0.7s ease-in-out infinite; }
+.pet-sweat-shake { animation: shake 0.35s ease-in-out infinite; }
+.pet-reach-out,
+.pet-hug-file { animation: bounce 0.5s ease-in-out infinite; }
+.pet-sleepy-nod { animation: nod 2s ease-in-out infinite; }
+.pet-poke-screen { animation: poke 1s ease-in-out infinite; }
+.pet-wave-in { animation: pop 0.8s ease-in-out infinite; }
+
+.action-menu {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 10px 24px rgba(40, 20, 30, 0.22);
+  -webkit-app-region: no-drag;
+}
+
+.action-menu-title {
+  color: #6d2438;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.action-menu button {
+  border: 1px solid #ffc0cb;
+  border-radius: 10px;
+  background: #fff4f7;
+  color: #6d2438;
+  padding: 7px 10px;
+  cursor: pointer;
+}
+
+@keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+@keyframes breathe { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes sway { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
+@keyframes pop { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+@keyframes nod { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(3deg); } }
+@keyframes poke { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-6px); } }
