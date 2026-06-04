@@ -6,7 +6,7 @@
 
 ## 当前状态总览
 
-项目处于 **Core MVP 实现进行中** 状态。Task 6 已完成，下一步是 Task 7。
+项目处于 **Core MVP 实现进行中** 状态。Task 7 已完成，下一步是 Task 8。
 
 已完成：
 
@@ -19,6 +19,8 @@
 - Task 3 已完成并通过测试和 typecheck：桌宠状态配置、中文气泡和优先级状态机。
 - Task 4 已完成并通过测试和 typecheck：Electron 主进程窗口、托盘、事件轮询和 IPC 桥。
 - Task 5 已完成并通过测试和 typecheck：React Renderer 桌宠界面（5A `[CORE]` 占位 CSS 小人和功能骨架；5B `[VISUAL]` 视觉美化以后再做）。
+- Task 6 已完成并通过测试和 typecheck：文件投递 helper 单元测试和元信息记录（6A `[CORE]`）。
+- Task 7 已完成并通过测试和 typecheck：Bridge 状态模拟、Claude hook 状态映射和 outbox watcher。
 
 当前 `git status --short`：
 
@@ -26,7 +28,7 @@
  M docs/handoff.md
 ```
 
-最近提交（Task 6 刚提交后）：
+最近提交（Task 7 刚提交后）：
 
 ```text
 <latest> (HEAD -> desktop-pet-mvp) feat: add jsonl event storage
@@ -250,6 +252,17 @@ typecheck   passed
 Test Files  4 passed (4)
 Tests       16 passed (16)
 typecheck   passed
+```
+
+### 2026-06-04 Task 7 Bridge Scripts
+
+Bridge 脚本实现完成：emit 命令、hook 状态映射（5 测试全通过）、outbox watcher。`npm run emit` 和 `npm run bridge:hook` 端到端工作正常。
+
+```text
+Test Files  5 passed (5)
+Tests       21 passed (21)
+typecheck   passed
+emit & bridge:hook CLI verified
 ```
 
 ## 当前未完成事项

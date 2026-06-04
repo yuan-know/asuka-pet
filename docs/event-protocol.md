@@ -81,3 +81,26 @@
 测试位于：
 
 - `tests/event-protocol.test.ts`
+
+## Bridge 命令
+
+开发期状态模拟：
+
+```bash
+npm run emit -- coding
+```
+
+Claude Code hook 入口：
+
+```bash
+npm run bridge:hook -- session-start
+npm run bridge:hook -- pre-tool-use
+npm run bridge:hook -- post-tool-use
+npm run bridge:hook -- stop
+```
+
+读取桌宠文件投递事件：
+
+```bash
+npm run bridge:watch-outbox
+```
