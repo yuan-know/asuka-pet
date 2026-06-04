@@ -36,4 +36,19 @@ describe('claude hook mapping', () => {
       message: '工具执行出错了'
     });
   });
+
+  it('maps PascalCase PreToolUse Read events to reading', () => {
+    const result = mapHookInputToState('pre-tool-use', {
+      tool_name: 'Read',
+      tool_input: { file_path: 'README.md' }
+    });
+
+    expect(result).toEqual({ state: 'reading', message: '正在读资料' });
+  });
+
+  it('maps Stop to waiting_user instead of shutdown', () => {
+    const result = mapHookInputToState('stop', {});
+
+    expect(result).toEqual({ state: 'waiting_user', message: '我等你下一步指示' });
+  });
 });
