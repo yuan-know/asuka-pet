@@ -7,6 +7,7 @@ export interface EventPaths {
   inbox: string;
   outbox: string;
   processed: string;
+  session: string;
   logsDir: string;
   bridgeLog: string;
 }
@@ -31,6 +32,7 @@ export function getEventPaths(projectRoot = getProjectRoot()): EventPaths {
     inbox: path.join(eventsDir, 'inbox.jsonl'),
     outbox: path.join(eventsDir, 'outbox.jsonl'),
     processed: path.join(eventsDir, 'processed.jsonl'),
+    session: path.join(eventsDir, 'claude-session.json'),
     logsDir,
     bridgeLog: path.join(logsDir, 'bridge.log')
   };
