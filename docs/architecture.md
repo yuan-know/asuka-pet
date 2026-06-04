@@ -28,3 +28,12 @@ Renderer 文件拖拽 → events/outbox.jsonl → Bridge / Claude Code 后续处
 ## 降级原则
 
 桌宠是增强体验，不能阻塞 Claude Code。Bridge/hook 出错时应记录日志并安全退出。
+
+## JSONL 事件存储
+
+事件路径由 `src/shared/paths.ts` 生成。JSONL 读写由 `src/shared/jsonl.ts` 提供：
+
+- `appendJsonLine(filePath, value)`：确保目录存在并追加一行 JSON。
+- `readJsonLines(filePath)`：读取所有有效 JSON 行，缺失文件返回空数组，坏行跳过。
+
+日志写入由 `src/shared/logger.ts` 提供，日志失败不会中断调用方。
