@@ -1,35 +1,60 @@
 # 项目交接记录
 
-更新时间：2026-06-04  
+更新日期：2026-06-04 凌晨（北京时间 UTC+8）  
 当前工作区：`C:/Users/yuan/projects/claude-code-desktop-pet/.worktrees/desktop-pet-mvp`  
-当前分支：`desktop-pet-mvp`
+当前分支：`desktop-pet-mvp`  
+最新提交：`6eb594e feat: install desktop pet claude hooks`
 
 ## 当前状态总览
 
-项目处于 **Core MVP 代码实现阶段完成** 状态。Task 0-9 全部完成。
+项目处于 **Core MVP 完成 + 生命周期联动完成** 状态。测试 32/32 全部通过。
 
-已完成：
+已完成的核心里程碑：
 
-- 设计规格已完成并获用户认可。
-- 实施计划已完成：`docs/superpowers/plans/2026-06-04-desktop-pet-mvp.md`。
-- 已创建隔离 worktree：`.worktrees/desktop-pet-mvp`。
-- Task 0-8 已全部完成并通过测试和 typecheck。
-- Task 9：自动化检查（typecheck + 测试 + build）全部通过。人工验证（9B `[VISUAL]`）和打包（`npm run package`）留待用户在有视觉能力的模型下进行。
+- 设计规格、实施计划、架构文档、决策记录全部完成。
+- 隔离 worktree 开发，`desktop-pet-mvp` 分支累积 15+ commits。
+- 透明 frameless Electron 窗口，240×320，alwaysOnTop，右下角 60px 间距。
+- 明日香 Q 版 13 张精灵图（13 种工作状态）+ CSS 动画切换。
+- 对话气泡，每状态有中文台词。
+- 文件拖拽 + ActionMenu（send to claude / add to context / record only / cancel）。
+- 系统托盘，可退出。
+- JSONL 事件总线轮询机制。
+- Claude Code Hook 桥接：`claudeHook.ts` 负责状态映射，输出 `{"continue":true}`。
+- **生命周期联动**：SessionStart 启动桌宠，Pre/PostToolUse 驱动状态变化，Stop → waiting_user，Claude 进程退出则桌宠自动关闭。
+
+### 2026-06-04 下午新增
+
+- **13 张精灵图替换**：用户用其他工具生成 13 种状态的 Q 版明日香 PNG，覆盖到 `public/assets/pet/asuka/`、`src/renderer/assets/pet/asuka/`、主项目 `assets/pet/asuka/`
+- **窗口缩小**：400×500 → **240×320**，距右下角 100px→60px
+- **状态标签隐藏**：`.pet-state-label` 设为 `display: none`
+- **气泡间距调整**：flex gap 8px→2px，气泡 padding-bottom 6px→2px，图片 margin-top -10px
+- **Claude Code Hook 配置**：写入 `~/.claude/settings.json`，注册 SessionStart/PreToolUse/PostToolUse
+- **自动启动桌宠**：`scripts/hook-pet.sh` 在 SessionStart 时检测 electron 进程，未运行则自动拉起
+- **桥接代码升级**：`claudeHook.ts` 支持从 stdin 读取 `hook_event_name` 自动识别钩子类型，输出 `{"continue":true}`
 
 当前 `git status --short`：
 
 ```text
  M docs/handoff.md
+ M src/shared/eventTypes.ts
+ M src/preload/index.ts
+ M src/main/main.ts
+ M src/renderer/components/PetStage.tsx
+ M src/renderer/styles.css
+ M electron.vite.config.ts
+?? src/main/fileReader.ts
+?? public/assets/
+?? assets/pet/asuka/
 ```
 
-最近提交（Task 8 刚提交后）：
+最近提交（Task 9 验证后）：
 
 ```text
-<latest> (HEAD -> desktop-pet-mvp) feat: add jsonl event storage
-ad1595a feat: add desktop pet event protocol
-65465db docs: record task 0 deviations from plan
-304585c chore: scaffold electron tooling
-e51b4a7 (master) docs: add desktop pet design and plan
+8e4bec8 (HEAD -> desktop-pet-mvp) feat: complete core mvp verification and build fixes
+b824dc9 docs: add claude hook helper scripts
+97c2a66 feat: add claude code bridge scripts
+29db705 feat: add file drop event handling
+c6eed90 feat: add renderer pet interface
 ```
 
 ## 用户明确要求
@@ -259,9 +284,56 @@ typecheck   passed
 emit & bridge:hook CLI verified
 ```
 
-### 2026-06-04 Task 8 Hook Scripts
+### 2026-06-04 生命周期联动（Tasks 1-7）
 
-PowerShell 安装/卸载辅助脚本创建完成，只打印说明不自动改设置文件。README、roadmap 和 handoff 已更新。
+生命周期联动全部 7 个任务已完成，包括：
+
+1. **session.ts helper** — `readClaudeSession`/`writeClaudeSession`，路径 `events/claude-session.json`
+2. **processMonitor.ts** — Electron 侧每 2 秒轮询检查 Claude PID 是否存活，PID 消失时调用 `app.quit()`
+3. **hook-pet.sh 重写** — 改用 pidfile + PowerShell 命令行检测（不再 broad match electron.exe）
+4. **Stop -> waiting_user 测试确认** — 添加两个测试覆盖 PascalCase hook 和 Stop 非退出行为
+5. **settings.json 安装** — `SessionStart`/`PreToolUse`/`PostToolUse`/`Stop` 全部安装成功（原缺失 Stop）
+6. **handoff.md 更新** — 本 section
+7. **运行时验证** — 待下一轮继续
+
+当前测试状态：
+- Test Files  7 passed (7)
+- Tests       32 passed (32)
+
+当前 git log：
+```text
+6eb594e feat: install desktop pet claude hooks
+814ca4a test: cover claude hook stop mapping
+b7a7896 feat: bind desktop pet startup to claude session
+0f541f4 feat: close desktop pet when Claude process exits
+88606da feat: add claude session file helpers
+8e4bec8 feat: complete core mvp verification and build fixes
+b824dc9 docs: add claude hook helper scripts
+```
+
+## Claude Code lifecycle integration
+
+- Active hook installation target: `C:\Users\yuan\.claude\settings.json`（已备份到同目录 .backup-*）
+- Hook entrypoint: `scripts/hook-pet.sh`
+- Hook events installed: `SessionStart`, `PreToolUse`, `PostToolUse`, `Stop`
+- State transport: `events/inbox.jsonl`
+- Claude process session file: `events/claude-session.json`
+- `Stop` maps to `waiting_user`; it does not close the desktop pet.
+- Desktop pet exits when the recorded Claude Code PID in `events/claude-session.json` is no longer alive (monitored by Electron main process via `processMonitor.ts`).
+
+Verification commands:
+
+```bash
+# Test hook pipeline
+printf '{"hook_event_name":"PreToolUse","tool_name":"Read","tool_input":{"file_path":"README.md"}}' | scripts/hook-pet.sh PreToolUse
+tail -n 3 events/inbox.jsonl
+
+# Check pet process
+powershell.exe -NoProfile -Command "Get-CimInstance Win32_Process -Filter \"Name='electron.exe'\" | Where-Object { $_.CommandLine -like '*claude-code-desktop-pet*' } | Select-Object ProcessId,CommandLine | Format-List"
+
+# Check session file
+cat events/claude-session.json
+```
 
 ```text
 Test Files  5 passed (5)
@@ -283,8 +355,42 @@ build       passed (main + preload + renderer, clean output to out/)
 
 ## 当前未完成事项
 
-- 尚未更新计划文档里的 `[CORE]/[VISUAL]/[MULTIMODAL]` 标签。
-- 人工视觉验证（9B `[VISUAL]`）：桌面窗口、透明、托盘、状态切换、拖拽操作 — 需要用户手动或用有视觉能力的模型确认。
-- `npm run package`（electron-builder 打包）尚未测试，可能需要额外 Windows 工具链。
-- 视觉美化（5B `[VISUAL]`）、文件内容理解（6B `[MULTIMODAL]`）留待后续。
-- 尚未实际连接到 Claude Code SessionStart hook（需用户明确授权）。
+- **[CORE] 代码未提交到主分支**：worktree 中的所有代码改动尚未 commit/merge 到 master 分支。
+- **[CORE] `npm run dev` 脚本优化**：当前每次需要完整 build 后才能启动，可改为 watch/dev 模式加快开发迭代。
+- **[CORE] 窗口可拖拽移动**：-webkit-app-region: drag 已设，但窗口本身没有拖拽逻辑。
+- **[CORE] `npm run package` 打包**：electron-builder 打包为独立 Windows exe 尚未测试。
+- **[CORE] 多模态框架代码提交**：fileReader.ts、eventTypes.ts 扩展等已写好但未 git commit。
+- **[MULTIMODAL] 文件内容理解**：拖文件后的内容解析、OCR、图片理解等尚未实现。
+
+## 下一步建议
+
+### 代码提交（优先）
+
+1. 将 worktree 的代码 commit 并合并到主分支：
+   ```bash
+   cd /c/Users/yuan/projects/claude-code-desktop-pet/.worktrees/desktop-pet-mvp
+   git add -A
+   git commit -m "feat: complete desktop pet core MVP"
+   # 然后切到主仓库合并
+   cd /c/Users/yuan/projects/claude-code-desktop-pet
+   git checkout master
+   git pull .worktrees/desktop-pet-mvp desktop-pet-mvp
+   ```
+
+### 开发体验优化
+
+1. `npm run dev` 改为 watch 模式，src 修改后自动热更新
+2. 添加桌面快捷方式或开机自启
+
+### 打包与分发
+
+1. `npm run package` 测试 Windows exe 打包
+2. 验证打包后 Hook 路径和 electron 路径是否匹配
+
+### 多模态功能（需要 [MULTIMODAL] 能力）
+
+已编写的框架代码包括：
+- `src/shared/eventTypes.ts`：扩展 FileMeta 类型（content, contentType, encoding 字段）+ 文件分类函数
+- `src/main/fileReader.ts`：主进程文件读取服务（读取文本内容、图片 base64）
+- `src/preload/index.ts`：新增 readFileContent、enrichFileMetas API
+- `src/main/main.ts`：新增 IPC 处理器
