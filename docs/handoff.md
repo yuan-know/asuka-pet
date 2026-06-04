@@ -6,21 +6,15 @@
 
 ## 当前状态总览
 
-项目处于 **Core MVP 实现进行中** 状态。Task 7 已完成，下一步是 Task 8。
+项目处于 **Core MVP 实现即将完成** 状态。Task 8 已完成，只剩 Task 9 验证和打包。
 
 已完成：
 
 - 设计规格已完成并获用户认可。
 - 实施计划已完成：`docs/superpowers/plans/2026-06-04-desktop-pet-mvp.md`。
 - 已创建隔离 worktree：`.worktrees/desktop-pet-mvp`。
-- Task 0 已完成并通过两阶段 review：Electron/TypeScript 工具链基线。
-- Task 1 已完成并通过两阶段 review：共享事件协议。
-- Task 2 已完成并通过测试和 typecheck：JSONL 事件存储与路径工具。
-- Task 3 已完成并通过测试和 typecheck：桌宠状态配置、中文气泡和优先级状态机。
-- Task 4 已完成并通过测试和 typecheck：Electron 主进程窗口、托盘、事件轮询和 IPC 桥。
-- Task 5 已完成并通过测试和 typecheck：React Renderer 桌宠界面（5A `[CORE]` 占位 CSS 小人和功能骨架；5B `[VISUAL]` 视觉美化以后再做）。
-- Task 6 已完成并通过测试和 typecheck：文件投递 helper 单元测试和元信息记录（6A `[CORE]`）。
-- Task 7 已完成并通过测试和 typecheck：Bridge 状态模拟、Claude hook 状态映射和 outbox watcher。
+- Task 0-8 已全部完成并通过测试和 typecheck。
+- 下一步是 Task 9：端到端验证、build、和打包配置基线测试。
 
 当前 `git status --short`：
 
@@ -28,7 +22,7 @@
  M docs/handoff.md
 ```
 
-最近提交（Task 7 刚提交后）：
+最近提交（Task 8 刚提交后）：
 
 ```text
 <latest> (HEAD -> desktop-pet-mvp) feat: add jsonl event storage
@@ -265,6 +259,19 @@ typecheck   passed
 emit & bridge:hook CLI verified
 ```
 
+### 2026-06-04 Task 8 Hook Scripts
+
+PowerShell 安装/卸载辅助脚本创建完成，只打印说明不自动改设置文件。README、roadmap 和 handoff 已更新。
+
+```text
+Test Files  5 passed (5)
+Tests       21 passed (21)
+typecheck   passed
+```
+
 ## 当前未完成事项
 
-- 尚未更新计划文档里的 `[CORE]/[VISUAL]/[MULTIMODAL]` 标签；本 handoff 已记录拆分规则，下一模型可据此更新计划文档。
+- Task 9 端到端验证和打包尚未执行。
+- 尚未更新计划文档里的 `[CORE]/[VISUAL]/[MULTIMODAL]` 标签。
+- 视觉美化（5B `[VISUAL]`）、文件内容理解（6B `[MULTIMODAL]`）留待后续。
+- 尚未执行 `npm run build` 和 `npm run package`。

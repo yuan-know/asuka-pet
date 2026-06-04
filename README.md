@@ -36,5 +36,44 @@ npm run emit -- thinking
 
 ## 当前实现状态
 
-- Phase 0 正在进行：项目工具链与基础目录。
+- Core MVP 实现进行中：Task 0-7 已全部完成（`[CORE]` 子任务）。
 - 代码实现必须同步更新 `docs/handoff.md`。
+
+## 手动运行 MVP
+
+```bash
+npm run dev
+```
+
+另开一个终端写入状态事件：
+
+```bash
+npm run emit -- thinking
+npm run emit -- coding
+npm run emit -- success
+npm run emit -- error
+```
+
+## 文件投递事件
+
+拖文件到桌宠并选择动作后，事件写入：
+
+```text
+events/outbox.jsonl
+```
+
+读取未处理文件投递事件：
+
+```bash
+npm run bridge:watch-outbox
+```
+
+## Claude Code Hook
+
+先打印建议 hook 命令：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/install-claude-hook.ps1
+```
+
+MVP 阶段脚本不会自动覆盖 Claude Code 设置文件。确认命令后，再由用户决定是否写入 `settings.local.json`。
