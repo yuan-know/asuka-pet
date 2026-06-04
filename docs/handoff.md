@@ -6,7 +6,7 @@
 
 ## 当前状态总览
 
-项目处于 **Core MVP 实现进行中** 状态。Task 5 已完成，下一步是 Task 6。
+项目处于 **Core MVP 实现进行中** 状态。Task 6 已完成，下一步是 Task 7。
 
 已完成：
 
@@ -26,7 +26,7 @@
  M docs/handoff.md
 ```
 
-最近提交（Task 5 刚提交后）：
+最近提交（Task 6 刚提交后）：
 
 ```text
 <latest> (HEAD -> desktop-pet-mvp) feat: add jsonl event storage
@@ -239,6 +239,16 @@ React Renderer 桌宠界面实现完成：占位 CSS 角色、中文气泡、状
 ```text
 Test Files  3 passed (3)
 Tests       14 passed (14)
+typecheck   passed
+```
+
+### 2026-06-04 Task 6 File Drop (6A CORE)
+
+文件投递 helper 单元测试（2 测试），记录路径/元信息功能完成。6B 内容理解留待 `[MULTIMODAL]`。
+
+```text
+Test Files  4 passed (4)
+Tests       16 passed (16)
 typecheck   passed
 ```
 
