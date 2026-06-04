@@ -37,3 +37,10 @@ Renderer 文件拖拽 → events/outbox.jsonl → Bridge / Claude Code 后续处
 - `readJsonLines(filePath)`：读取所有有效 JSON 行，缺失文件返回空数组，坏行跳过。
 
 日志写入由 `src/shared/logger.ts` 提供，日志失败不会中断调用方。
+
+## Electron 主进程
+
+- `src/main/window.ts` 创建透明、无边框、置顶的桌宠窗口。
+- `src/main/tray.ts` 创建托盘菜单。
+- `src/main/eventBus.ts` 轮询 `events/inbox.jsonl` 并通过 IPC 推送事件。
+- `src/preload/index.ts` 暴露最小安全 API 给 Renderer。
