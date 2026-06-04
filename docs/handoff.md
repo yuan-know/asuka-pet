@@ -8,6 +8,12 @@
 - npm 工具链计划使用 Electron、electron-vite、React、TypeScript、Vitest。
 - 下一步是实现共享事件协议和 JSONL 工具。
 
+## 当前实现状态
+
+- 已完成共享事件协议：`src/shared/eventTypes.ts`。
+- 已完成协议测试：`tests/event-protocol.test.ts`。
+- 下一步是 JSONL 读写工具和事件路径工具。
+
 ## 用户明确要求
 
 - 默认全程中文交流。

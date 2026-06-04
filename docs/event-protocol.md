@@ -71,3 +71,13 @@
 - `add_to_project_context`
 - `record_only`
 - `cancel`
+
+## 代码来源
+
+事件枚举、TypeScript 类型、工厂函数和运行时校验位于：
+
+- `src/shared/eventTypes.ts`
+
+测试位于：
+
+- `tests/event-protocol.test.ts`
