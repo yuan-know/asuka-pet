@@ -8,5 +8,7 @@ release/
 .superpowers/
 .worktrees/
 events/*.jsonl
+events/claude-session.json
 !events/.gitkeep
+tmp-test-*.md
 npm-debug.log*

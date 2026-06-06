@@ -1,19 +1,43 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FileAction } from '../shared/eventTypes';
 import { createInitialPetViewState, reducePetStateEvent, resolveTimedOutState } from './pet/stateMachine';
 import { getBubbleForState } from './pet/personality';
 import { PetStage } from './components/PetStage';
-import { SpeechBubble } from './components/SpeechBubble';
 import { ActionMenu } from './components/ActionMenu';
 import { createFileDroppedEventFromFiles } from './pet/fileDropEvent';
+
+const petApi = window.desktopPet;
+const WIN_W = 160;
+const WIN_H = 195;
+const WIN_H_EXPANDED = 320; // tall enough for both pet and menu
+
+if (!petApi) {
+  console.warn('[desktop-pet] preload API not available — running in standalone mode');
+}
 
 export function App() {
   const [viewState, setViewState] = useState(() => createInitialPetViewState());
   const [droppedFiles, setDroppedFiles] = useState<File[]>([]);
   const hasDroppedFiles = droppedFiles.length > 0;
+  const resizedRef = useRef(false);
+
+  // Expands/shrinks the window when file menu appears/dismisses.
+  // Also controls mouse-event passthrough so menu buttons stay clickable.
+  useEffect(() => {
+    if (hasDroppedFiles && !resizedRef.current) {
+      resizedRef.current = true;
+      petApi?.resizeWindow(WIN_W, WIN_H_EXPANDED);
+      petApi?.enableFullInteraction();
+    } else if (!hasDroppedFiles && resizedRef.current) {
+      resizedRef.current = false;
+      petApi?.resizeWindow(WIN_W, WIN_H);
+      petApi?.restorePassthrough();
+    }
+  }, [hasDroppedFiles]);
 
   useEffect(() => {
-    const unsubscribe = window.desktopPet.onEvent((event) => {
+    if (!petApi) return;
+    const unsubscribe = petApi.onEvent((event) => {
       if (event.type !== 'pet.state') return;
       setViewState((current) =>
         reducePetStateEvent(current, {
@@ -70,7 +94,11 @@ export function App() {
         size: f.size
       }));
       const event = createFileDroppedEventFromFiles(filesForEvent, action);
-      await window.desktopPet.appendOutbox(event);
+      if (petApi) {
+        await petApi.appendOutbox(event);
+      } else {
+        console.log('[desktop-pet] file dropped (no-op, no preload):', event);
+      }
     }
     setDroppedFiles([]);
   }
@@ -83,13 +111,15 @@ export function App() {
         now: Date.now()
       })
     );
+    petApi?.showClaudeTerminal();
   }
 
   return (
     <div className="app" {...dragHandlers}>
-      <SpeechBubble message={viewState.message} />
-      <PetStage viewState={viewState} onPetClick={handlePetClick} />
-      {hasDroppedFiles ? <ActionMenu fileCount={droppedFiles.length} onSelect={handleAction} /> : null}
+      <div className="pet-area">
+        <PetStage viewState={viewState} onPetClick={handlePetClick} />
+        {hasDroppedFiles ? <ActionMenu fileCount={droppedFiles.length} onSelect={handleAction} /> : null}
+      </div>
     </div>
   );
 }

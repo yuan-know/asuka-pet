@@ -4,13 +4,13 @@ import { createFileDroppedEventFromFiles, createFileMeta } from '../src/renderer
 describe('file drop event helper', () => {
   it('creates file metadata from dropped files', () => {
     const meta = createFileMeta({
-      path: 'C:/Users/yuan/Desktop/example.pdf',
+      path: '/path/to/example.pdf',
       name: 'example.pdf',
       size: 2048
     });
 
     expect(meta).toEqual({
-      path: 'C:/Users/yuan/Desktop/example.pdf',
+      path: '/path/to/example.pdf',
       name: 'example.pdf',
       extension: '.pdf',
       size: 2048

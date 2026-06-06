@@ -1,0 +1,52 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash C:/Users/<yourname>/projects/asuka-pet/scripts/hook-pet.sh SessionStart",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash C:/Users/<yourname>/projects/asuka-pet/scripts/hook-pet.sh PreToolUse",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash C:/Users/<yourname>/projects/asuka-pet/scripts/hook-pet.sh PostToolUse",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash C:/Users/<yourname>/projects/asuka-pet/scripts/hook-pet.sh Stop",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

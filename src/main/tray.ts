@@ -1,9 +1,13 @@
 import { BrowserWindow, Menu, Tray, nativeImage, app } from 'electron';
+import * as path from 'path';
 
 let tray: Tray | undefined;
 
 export function createPetTray(window: BrowserWindow): Tray {
-  const image = nativeImage.createEmpty();
+  const iconPath = app.isPackaged
+    ? path.join(process.resourcesPath, 'assets', 'tray-icon.png')
+    : path.join(__dirname, '..', '..', 'public', 'assets', 'tray-icon.png');
+  const image = nativeImage.createFromPath(iconPath).resize({ width: 32, height: 32 });
   tray = new Tray(image);
   tray.setToolTip('Claude Code Desktop Pet');
   tray.setContextMenu(

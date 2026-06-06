@@ -44,6 +44,10 @@ export interface FileMeta {
   name: string;
   extension: string;
   size: number;
+  // 多模态支持字段
+  content?: string;        // 文本内容或 base64 编码
+  contentType?: 'text' | 'image' | 'binary' | 'unknown';
+  encoding?: 'utf8' | 'base64';
 }
 
 export interface FileDroppedPayload {
@@ -97,6 +101,44 @@ export function createFileDroppedEvent(input: {
       meta: input.meta
     }
   };
+}
+
+// 文件类型分类
+const TEXT_EXTENSIONS = new Set([
+  '.txt', '.md', '.json', '.js', '.ts', '.tsx', '.jsx', '.py', '.java', '.c', '.cpp', '.h',
+  '.css', '.html', '.xml', '.yaml', '.yml', '.toml', '.ini', '.cfg', '.sh', '.bat', '.ps1',
+  '.csv', '.log', '.gitignore', '.env', '.sql', '.r', '.go', '.rs', '.swift', '.kt'
+]);
+
+const IMAGE_EXTENSIONS = new Set([
+  '.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.svg', '.ico', '.tiff', '.tif'
+]);
+
+const BINARY_EXTENSIONS = new Set([
+  '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx',
+  '.zip', '.rar', '.7z', '.tar', '.gz',
+  '.mp3', '.mp4', '.avi', '.mov', '.wav',
+  '.exe', '.dll', '.so', '.dylib'
+]);
+
+export function classifyFileType(extension: string): 'text' | 'image' | 'binary' | 'unknown' {
+  const ext = extension.toLowerCase();
+  if (TEXT_EXTENSIONS.has(ext)) return 'text';
+  if (IMAGE_EXTENSIONS.has(ext)) return 'image';
+  if (BINARY_EXTENSIONS.has(ext)) return 'binary';
+  return 'unknown';
+}
+
+export function isTextFile(extension: string): boolean {
+  return classifyFileType(extension) === 'text';
+}
+
+export function isImageFile(extension: string): boolean {
+  return classifyFileType(extension) === 'image';
+}
+
+export function isBinaryFile(extension: string): boolean {
+  return classifyFileType(extension) === 'binary';
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

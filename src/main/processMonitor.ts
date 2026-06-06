@@ -38,6 +38,7 @@ export async function checkClaudeLifecycleOnce(
   const paths = getEventPaths(projectRoot);
   const session = await readClaudeSession(paths.session);
   if (!session) return false;
+  if (session.claudePid <= 0) return false;
   return !(await checkProcessAlive(session.claudePid));
 }
 

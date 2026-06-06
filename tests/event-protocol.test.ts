@@ -25,11 +25,11 @@ describe('desktop pet event protocol', () => {
   it('creates valid file dropped events', () => {
     const event = createFileDroppedEvent({
       source: 'desktop-pet',
-      paths: ['C:/Users/yuan/Desktop/example.pdf'],
+      paths: ['/path/to/example.pdf'],
       action: 'send_to_claude',
       meta: [
         {
-          path: 'C:/Users/yuan/Desktop/example.pdf',
+          path: '/path/to/example.pdf',
           name: 'example.pdf',
           extension: '.pdf',
           size: 2457600
@@ -38,7 +38,7 @@ describe('desktop pet event protocol', () => {
     });
 
     expect(event.type).toBe('file.dropped');
-    expect(event.payload.paths).toEqual(['C:/Users/yuan/Desktop/example.pdf']);
+    expect(event.payload.paths).toEqual(['/path/to/example.pdf']);
     expect(event.payload.action).toBe('send_to_claude');
     expect(isDesktopPetEvent(event)).toBe(true);
   });
