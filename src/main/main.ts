@@ -3,7 +3,7 @@ import { execFile } from 'node:child_process';
 import { MainEventBus } from './eventBus';
 import { createPetTray } from './tray';
 import { createPetWindow, startHitTest, stopHitTest, setIsDragging,
-  enableFullInteraction, restorePassthrough } from './window';
+  enableFullInteraction, restorePassthrough, setMousePassthrough } from './window';
 import { isDesktopPetEvent } from '../shared/eventTypes';
 import { readFileContent, enrichFileMetas } from './fileReader';
 import { createClaudeLifecycleMonitor } from './processMonitor';
@@ -139,6 +139,10 @@ if (!gotLock) {
     // 文件菜单关闭 → 恢复穿透 + 重启轮询
     ipcMain.handle('desktop-pet:restore-passthrough', () => {
       restorePassthrough(window);
+    });
+
+    ipcMain.handle('desktop-pet:set-passthrough', (_event, passthrough: boolean) => {
+      setMousePassthrough(window, passthrough);
     });
 
     ipcMain.handle('desktop-pet:drag-start', () => {

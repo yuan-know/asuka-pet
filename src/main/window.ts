@@ -3,44 +3,19 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 
 const WIN_H_NORMAL = 195;
-const WIN_H_EXPANDED = 320;
+const WIN_H_EXPANDED = 420;
 
 let hitTimer: ReturnType<typeof setInterval> | null = null;
 let isDragging = false;
 
 /**
- * Start polling cursor position every `intervalMs` (default 150ms).
- * Normal (small) window: only bubble+sprite area passes clicks; thin margins passthrough.
- * Expanded window: full area interactive (ActionMenu visible), no polling needed.
+ * Initialize hit testing with mouse events enabled.
+ * Pixel-level passthrough is driven by renderer canvas sampling.
  */
-export function startHitTest(browserWindow: BrowserWindow, intervalMs = 150): void {
+export function startHitTest(browserWindow: BrowserWindow): void {
   stopHitTest();
 
-  const step = () => {
-    if (browserWindow.isDestroyed()) { stopHitTest(); return; }
-    if (isDragging) return;
-
-    const [, h] = browserWindow.getSize();
-    if (h >= WIN_H_EXPANDED) {
-      if (!browserWindow.isDestroyed()) browserWindow.setIgnoreMouseEvents(false);
-      return;
-    }
-
-    const cursor = screen.getCursorScreenPoint();
-    const [wx, wy] = browserWindow.getPosition();
-    const rx = cursor.x - wx;
-    const ry = cursor.y - wy;
-    const inside = rx >= 10 && rx <= 150 && ry >= 10 && ry <= 195;
-
-    if (!browserWindow.isDestroyed()) {
-      browserWindow.setIgnoreMouseEvents(!inside, { forward: true });
-    }
-  };
-
-  // First call: enable mouse events so the window is immediately clickable
   if (!browserWindow.isDestroyed()) browserWindow.setIgnoreMouseEvents(false);
-  // Then start passthrough polling
-  hitTimer = setInterval(step, intervalMs);
 }
 
 export function stopHitTest(): void {
@@ -48,6 +23,12 @@ export function stopHitTest(): void {
     clearInterval(hitTimer);
     hitTimer = null;
   }
+}
+
+export function setMousePassthrough(browserWindow: BrowserWindow, passthrough: boolean): void {
+  if (browserWindow.isDestroyed()) return;
+  if (isDragging) return;
+  browserWindow.setIgnoreMouseEvents(passthrough, { forward: true });
 }
 
 /**

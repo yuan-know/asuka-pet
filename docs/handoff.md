@@ -7,7 +7,86 @@
 
 ## 当前状态总览
 
-项目处于 **Core MVP 完成 + 生命周期联动完成** 状态。测试 32/32 全部通过。
+项目处于 **Core MVP 完成 + hook 状态同步可用，但生命周期退出绑定仍需修复** 状态。此前自动测试 32/32 全部通过；但 2026-06-04 真实运行验证发现 `SessionStart` PID/session 绑定仍有缺陷，不能再把生命周期联动视为完全通过。
+
+### 2026-06-05 3D 明日香 Blender 建模准备（最新，切换模型优先读取）
+
+用户目标已升级为：**从三视图开始，在 Blender 中零基础搭建骨骼驱动的高标准 Q 版明日香 3D 桌宠**，最终希望角色拥有骨骼、表情和大量精细动作，而不是只接入静态 3D 模型。
+
+当前已完成：
+
+- Blender 已由用户安装完成（用户口头确认：2026-06-05）。注意：此前命令行检查 `blender` 不在 PATH；若后续需要自动运行 Blender Python，先确认或配置 Blender 可执行路径。仅用图形界面操作不受影响。
+- 原三视图是一张横向拼图，来源：`C:\Users\yuan\Documents\xwechat_files\wxid_x3vxwi7harzc22_7b87\temp\RWTemp\2026-06\9e20f478899dc29eb19741386f9343c8\2c84ab97355bf40d4c833c6568d3d77e.jpg`。
+- 已自动裁切并验证三张 Blender 参考图：
+  - `C:\Users\yuan\Desktop\asuka-blender\references\front.png` — 759×1280
+  - `C:\Users\yuan\Desktop\asuka-blender\references\back.png` — 759×1280
+  - `C:\Users\yuan\Desktop\asuka-blender\references\side.png` — 761×1280
+  - 备份：`C:\Users\yuan\Desktop\asuka-blender\references\combined_reference.png` — 2279×1280
+  - 预览拼图：`C:\Users\yuan\Desktop\asuka-blender\references\cropped_preview.png` — 840×480
+- 已创建本地资产工作区：
+  - `C:\Users\yuan\Desktop\asuka-blender\references`
+  - `C:\Users\yuan\Desktop\asuka-blender\work`
+  - `C:\Users\yuan\Desktop\asuka-blender\exports`
+  - `C:\Users\yuan\Desktop\asuka-blender\reports`
+- 已写入 Blender 资产实施计划：`docs/superpowers/plans/2026-06-05-rigged-asuka-blender-asset.md`。
+
+裁切验证输出：
+
+```text
+dir references: True
+dir work: True
+dir exports: True
+dir reports: True
+file references/front.png: ok 759x1280
+file references/back.png: ok 759x1280
+file references/side.png: ok 761x1280
+file references/combined_reference.png: ok 2279x1280
+file references/cropped_preview.png: ok 840x480
+ALL_REFERENCE_FILES_VERIFIED
+```
+
+下一位模型接手时，不要从模型接入代码开始；先带用户完成 Blender 第 1 课：
+
+1. 打开 Blender 图形界面。
+2. 删除默认 Cube。
+3. 设置单位：`Scene Properties → Units → Unit System: Metric`，`Unit Scale: 1.0`。
+4. 保存初始文件：`C:\Users\yuan\Desktop\asuka-blender\work\asuka_chibi_v001.blend`。
+5. 导入参考图：
+   - 正视图 `Numpad 1` → `Add → Image → Reference` → `front.png`
+   - 右视图 `Numpad 3` → `Add → Image → Reference` → `side.png`
+   - 背视图 `Ctrl + Numpad 1` → `Add → Image → Reference` → `back.png`
+6. 将每张参考图透明度设为 `0.45`，锁定或避免误移动。
+7. 保存后再进入 blockout：大头、小身体、头发体块、双马尾、驾驶服身体块、四肢。
+
+建模优先级：先做桌宠小窗口可读的大轮廓（头发、脸、双马尾、红色驾驶服），不要一开始抠服装细节。后续路线是：blockout → clean mesh → materials → rig → weights → shape keys → `idle_breathe` / `thinking_tilt` / `coding_loop` / `success_pop` / `error_shake` → GLB 导出。
+
+### 2026-06-04 hook 生命周期真实运行验证（最新，切换模型优先处理）
+
+按运行时观察验证，不跑测试/不 typecheck。结论：**Claude Code 工具状态同步已生效，但生命周期绑定未通过，整体 runtime verification 判定 FAIL。**
+
+已确认可工作：
+
+- `C:\Users\yuan\.claude\settings.json` 已安装 4 个真实 hook：`SessionStart`、`PreToolUse`、`PostToolUse`、`Stop`，命令均指向本 worktree 的 `scripts/hook-pet.sh <HookName>`。
+- 真实 Claude Code 工具调用会写入 `events/inbox.jsonl`，观察到 `reading`、`thinking`、`coding`、`testing`、`waiting_user` 等状态事件。
+- 桌宠 Electron 窗口真实运行，进程证据：主进程 `electron.exe` PID **33284**，命令行为 `...node_modules\electron\dist\electron.exe dist/main/main.js --no-sandbox --disable-gpu`。
+- `Stop` hook 映射为 `waiting_user`，且不会关闭桌宠，符合设计。
+- 截图证据：`C:\Users\yuan\AppData\Local\Temp\desktop-pet-hook-verification.png`。
+
+失败点 / 根因线索：
+
+1. **`events/claude-session.json` 缺失**：运行时观察为 `missing`，所以 Electron 侧 `processMonitor.ts` 没有可监控的 Claude PID，无法证明“关闭 Claude Code 后桌宠自动退出”。
+2. **`/tmp/desktop-pet.pid` 与真实 Electron 主进程 PID 不一致**：pidfile 内容是 **12741**，但真实 Electron 主进程是 **33284**。当前 `ensure_pet_running` 用 `nohup node_modules/.bin/electron ... & echo $!` 写入的是启动链/包装进程 PID，不是 Windows `electron.exe` 主进程 PID。
+3. **`find_claude_pid` 在当前 hook/bash 环境里不能只依赖 `$PPID`**：诊断时 `BASH_PPID=1`，沿父进程链没有找到 Claude；但系统中真实 Claude 进程存在：`claude.exe` PID **28372**，命令行为 `...@anthropic-ai\claude-code\bin\claude.exe`。因此 `hook-pet.sh` 没能写 session 文件。
+4. 终端读取 JSONL 时中文 message 有乱码，状态枚举正常，疑似 Windows/bash 编码问题；不影响状态联动，但影响日志可读性。
+
+下一模型优先任务：修复 `scripts/hook-pet.sh`。建议继续遵守 systematic-debugging + TDD：
+
+1. 先写失败验证/测试，覆盖：
+   - `SessionStart` 应写出 `events/claude-session.json`，其中 `claudePid` 指向真实活跃 `claude.exe`；
+   - pidfile 应记录命令行包含项目路径且无 `--type=` 的真实 Electron 主进程 PID，而不是 bash/nohup job PID。
+2. 修复 `find_claude_pid`：不要只沿 `$PPID` 查找；当父链失败时 fallback 到 PowerShell 搜索活跃 `claude.exe` / 命令行包含 `@anthropic-ai\claude-code\bin\claude.exe` 的进程。注意多 Claude 会话时可能要选择最新/当前会话，MVP 可先选择最近启动的 `claude.exe` 并在文档标注单会话限制。
+3. 修复 `ensure_pet_running`：启动后通过 PowerShell 查询 `Name='electron.exe'`、`CommandLine` 包含 `claude-code-desktop-pet`/项目路径、且不包含 `--type=` 的主进程 PID，再写入 `/tmp/desktop-pet.pid`。
+4. 修完后重新 runtime verification：触发 hook → 查 `events/inbox.jsonl`、`events/claude-session.json`、`/tmp/desktop-pet.pid`、真实 Electron PID；最后验证 `Stop` 不关闭，模拟/实际关闭 Claude 后桌宠退出。
 
 已完成的核心里程碑：
 

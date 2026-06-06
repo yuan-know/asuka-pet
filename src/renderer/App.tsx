@@ -9,7 +9,7 @@ import { createFileDroppedEventFromFiles } from './pet/fileDropEvent';
 const petApi = window.desktopPet;
 const WIN_W = 160;
 const WIN_H = 195;
-const WIN_H_EXPANDED = 320; // tall enough for both pet and menu
+const WIN_H_EXPANDED = 420; // tall enough for both pet and menu
 
 if (!petApi) {
   console.warn('[desktop-pet] preload API not available — running in standalone mode');
@@ -26,8 +26,8 @@ export function App() {
   useEffect(() => {
     if (hasDroppedFiles && !resizedRef.current) {
       resizedRef.current = true;
-      petApi?.resizeWindow(WIN_W, WIN_H_EXPANDED);
       petApi?.enableFullInteraction();
+      petApi?.resizeWindow(WIN_W, WIN_H_EXPANDED);
     } else if (!hasDroppedFiles && resizedRef.current) {
       resizedRef.current = false;
       petApi?.resizeWindow(WIN_W, WIN_H);
@@ -117,7 +117,7 @@ export function App() {
   return (
     <div className="app" {...dragHandlers}>
       <div className="pet-area">
-        <PetStage viewState={viewState} onPetClick={handlePetClick} />
+        <PetStage viewState={viewState} onPetClick={handlePetClick} isMenuOpen={hasDroppedFiles} />
         {hasDroppedFiles ? <ActionMenu fileCount={droppedFiles.length} onSelect={handleAction} /> : null}
       </div>
     </div>

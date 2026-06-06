@@ -5,13 +5,22 @@ import { SpeechBubble } from './SpeechBubble';
 interface PetStageProps {
   viewState: PetViewState;
   onPetClick: () => void;
+  isMenuOpen: boolean;
 }
 
-export function PetStage({ viewState, onPetClick }: PetStageProps) {
+export function PetStage({ viewState, onPetClick, isMenuOpen }: PetStageProps) {
   const [imgSrc, setImgSrc] = useState<string>('');
   const [hovered, setHovered] = useState(false);
   const prevState = useRef('');
   const dragRef = useRef({ dragging: false, startX: 0, startY: 0 });
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const spriteRef = useRef<HTMLImageElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const isMenuOpenRef = useRef(false);
+
+  useEffect(() => {
+    isMenuOpenRef.current = isMenuOpen;
+  }, [isMenuOpen]);
 
   useEffect(() => {
     const spriteName = viewState.state;
@@ -20,13 +29,81 @@ export function PetStage({ viewState, onPetClick }: PetStageProps) {
     setImgSrc('');
 
     window.desktopPet?.getPetImage(spriteName)
-      .then((dataUrl: string) => setImgSrc(dataUrl))
+      .then((dataUrl: string) => {
+        setImgSrc(dataUrl);
+        const offscreen = document.createElement('canvas');
+        const tempImg = new Image();
+        tempImg.onload = () => {
+          offscreen.width = tempImg.naturalWidth;
+          offscreen.height = tempImg.naturalHeight;
+          offscreen.getContext('2d')!.drawImage(tempImg, 0, 0);
+          canvasRef.current = offscreen;
+        };
+        tempImg.src = dataUrl;
+      })
       .catch(() => {
         window.desktopPet?.getPetImage('idle')
-          .then((dataUrl: string) => setImgSrc(dataUrl))
+          .then((dataUrl: string) => {
+            setImgSrc(dataUrl);
+            const offscreen = document.createElement('canvas');
+            const tempImg = new Image();
+            tempImg.onload = () => {
+              offscreen.width = tempImg.naturalWidth;
+              offscreen.height = tempImg.naturalHeight;
+              offscreen.getContext('2d')!.drawImage(tempImg, 0, 0);
+              canvasRef.current = offscreen;
+            };
+            tempImg.src = dataUrl;
+          })
           .catch(() => { /* ignore */ });
       });
   }, [viewState.state]);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isMenuOpenRef.current) {
+        window.desktopPet?.setPassthrough(false);
+        return;
+      }
+      const wrapper = wrapperRef.current;
+      if (!wrapper) {
+        window.desktopPet?.setPassthrough(false);
+        return;
+      }
+
+      const wrapperRect = wrapper.getBoundingClientRect();
+      if (
+        e.clientX < wrapperRect.left ||
+        e.clientY < wrapperRect.top ||
+        e.clientX >= wrapperRect.right ||
+        e.clientY >= wrapperRect.bottom
+      ) {
+        window.desktopPet?.setPassthrough(true);
+        return;
+      }
+
+      const canvas = canvasRef.current;
+      const img = spriteRef.current;
+      if (!canvas || !img) {
+        window.desktopPet?.setPassthrough(false);
+        return;
+      }
+      const rect = img.getBoundingClientRect();
+      const relX = e.clientX - rect.left;
+      const relY = e.clientY - rect.top;
+      if (relX < 0 || relY < 0 || relX >= rect.width || relY >= rect.height) {
+        window.desktopPet?.setPassthrough(true);
+        return;
+      }
+      const px = Math.round((relX / rect.width) * canvas.width);
+      const py = Math.round((relY / rect.height) * canvas.height);
+      const alpha = canvas.getContext('2d')!.getImageData(px, py, 1, 1).data[3];
+      window.desktopPet?.setPassthrough(alpha < 10);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   const onMouseDown = useCallback((e: React.MouseEvent) => {
     dragRef.current.dragging = true;
@@ -55,7 +132,7 @@ export function PetStage({ viewState, onPetClick }: PetStageProps) {
   }, []);
 
   return (
-    <div className="pet-stage-wrapper" onMouseDown={onMouseDown}>
+    <div className="pet-stage-wrapper" ref={wrapperRef} onMouseDown={onMouseDown}>
       <button
         className={`pet-stage pet-${viewState.animation}`}
         onClick={onPetClick}
@@ -73,6 +150,7 @@ export function PetStage({ viewState, onPetClick }: PetStageProps) {
           {imgSrc ? (
             <img
               className="pet-sprite"
+              ref={spriteRef}
               src={imgSrc}
               alt={`明日香 - ${viewState.state}`}
               draggable={false}

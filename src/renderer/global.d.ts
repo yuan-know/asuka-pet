@@ -13,6 +13,7 @@ interface DesktopPetApi {
   resizeWindow(w: number, h: number): Promise<void>;
   enableFullInteraction(): Promise<void>;
   restorePassthrough(): Promise<void>;
+  setPassthrough(passthrough: boolean): Promise<void>;
 }
 
 declare global {

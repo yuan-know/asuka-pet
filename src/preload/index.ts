@@ -39,5 +39,8 @@ contextBridge.exposeInMainWorld('desktopPet', {
   },
   restorePassthrough() {
     return ipcRenderer.invoke('desktop-pet:restore-passthrough');
+  },
+  setPassthrough(passthrough: boolean) {
+    return ipcRenderer.invoke('desktop-pet:set-passthrough', passthrough);
   }
 });
